@@ -23,13 +23,24 @@ namespace SimpleDataEditor {
             if (currentText != null || currentText[0].Length != 0) {
                 for (int i = 0; i < currentText[0].Length; i++) {
                     dataGridView.Columns.Add(i.ToString(), i.ToString());
+                    dataGridView.Columns[ dataGridView.Columns.Count -1 ].SortMode =
+                        DataGridViewColumnSortMode.Programmatic;
                 }
+            }
+
+            dataGridView.Rows.Add(new DataGridViewRow());
+            dataGridView.Rows[0].Frozen = true;
+            for(int i = 0; i < dataGridView.Columns.Count; i++) {
+                DataGridViewButtonCell hideButton = new DataGridViewButtonCell();
+                hideButton.Value = "><";
+                dataGridView[i , 0] = hideButton;
             }
 
             //データグリッドに読み込んだテキストファイルを流し込む
             foreach (String[] ss in currentText) {
                 dataGridView.Rows.Add(ss);
             }
+
 
             dataGridView.SelectionChanged += dataGirdView_SelectionChanged;
             dataGridView.KeyDown += dataGridView_KeyDown;
@@ -38,22 +49,12 @@ namespace SimpleDataEditor {
 
         private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
             if((e.KeyCode == Keys.N) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
-                Console.WriteLine("press n");
                 dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex , new DataGridViewRow());
 
                 //行挿入で最終選択行がずれる
                 lastSelectedRowIndex++;
             }
 
-            if ((e.KeyCode == Keys.H) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
-                if (dataGridView.SelectedRows.Count > 0) {
-                    dataGridView.Rows[dataGridView.CurrentCell.RowIndex].Visible = false;
-                }
-
-                if (dataGridView.SelectedColumns.Count > 0) {
-                    dataGridView.Columns[dataGridView.CurrentCell.ColumnIndex].Visible = false;
-                }
-            }
 
         }
 
@@ -80,7 +81,6 @@ namespace SimpleDataEditor {
 
             foreach (var st in moreSeparated) {
                 foreach (var st2 in st) {
-                    System.Console.WriteLine(st2);
                 }
             }
 
@@ -101,6 +101,7 @@ namespace SimpleDataEditor {
             foreach (DataGridViewCell cell in cells) {
                 cell.Style.BackColor = paintingColor;
             }
+
         }
     }
 }
