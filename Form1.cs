@@ -117,7 +117,6 @@ namespace SimpleDataEditor {
             changeRowBackColor(dataGridView.CurrentCell.RowIndex, Color.AliceBlue);
 
             lastSelectedRowIndex = dataGridView.CurrentCell.RowIndex;
-
         }
 
         private void changeRowBackColor( int targetRowIndex , Color paintingColor ) {
@@ -125,6 +124,32 @@ namespace SimpleDataEditor {
             foreach (DataGridViewCell cell in cells) {
                 cell.Style.BackColor = paintingColor;
             }
+        }
+
+        private void exportTextFile() {
+
+            String unitText = "";
+
+            foreach( DataGridViewRow row in dataGridView.Rows) {
+                DataGridViewCellCollection cells = row.Cells;
+                String unitRow = "";
+
+                //空要素しかない空行は出力するテキストには含まない。
+                foreach( DataGridViewCell cell in cells ){
+                    if (cell.Value == null) {
+                        continue;
+                    }
+                    unitRow += cell.Value + ",";
+                }
+
+                if (unitRow.Length > 0) {
+                    unitRow = unitRow.Remove(unitRow.Length - 1);
+                }
+
+                unitText += unitRow + "\n";
+            }
+
+            File.WriteAllText(@"C:\sampleExpoted.txt", unitText);
 
         }
     }
