@@ -44,7 +44,17 @@ namespace SimpleDataEditor {
 
             dataGridView.SelectionChanged += dataGirdView_SelectionChanged;
             dataGridView.KeyDown += dataGridView_KeyDown;
+            dataGridView.CellContentClick += dataGridView_CellContentClick;
 
+        }
+
+        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+            DataGridView dgv = dataGridView;
+
+            const int HIDE_BUTTONS_ROW = 0;
+            if (dgv.CurrentCell.RowIndex == HIDE_BUTTONS_ROW) {
+                dgv.Columns[dgv.CurrentCell.ColumnIndex].Visible = false;
+            }
         }
 
         private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
@@ -54,8 +64,6 @@ namespace SimpleDataEditor {
                 //行挿入で最終選択行がずれる
                 lastSelectedRowIndex++;
             }
-
-
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -94,6 +102,7 @@ namespace SimpleDataEditor {
             changeRowBackColor(dataGridView.CurrentCell.RowIndex, Color.AliceBlue);
 
             lastSelectedRowIndex = dataGridView.CurrentCell.RowIndex;
+
         }
 
         private void changeRowBackColor( int targetRowIndex , Color paintingColor ) {
