@@ -17,6 +17,18 @@ namespace SimpleDataEditor {
             InitializeComponent();
             String sourceText = readSourceTextFile(@"C:\sampleData.txt");
             List<String[]> currentText = splitTextData(sourceText);
+
+            //読み込んだテキストファイルの行辺りの要素数を確認。データグリッドのColumnsを追加する。
+            if (currentText != null || currentText[0].Length != 0) {
+                for (int i = 0; i < currentText[0].Length; i++) {
+                    dataGridView.Columns.Add(i.ToString(), i.ToString());
+                }
+            }
+
+            //データグリッドに読み込んだテキストファイルを流し込む
+            foreach (String[] ss in currentText) {
+                dataGridView.Rows.Add(ss);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e) {
