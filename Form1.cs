@@ -13,6 +13,7 @@ namespace SimpleDataEditor {
     public partial class Form1 : Form {
 
         private int lastSelectedRowIndex = 0;
+        private DataGridViewRow dgvClipBoard;
 
         public Form1() {
             InitializeComponent();
@@ -58,11 +59,25 @@ namespace SimpleDataEditor {
         }
 
         private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
-            if((e.KeyCode == Keys.N) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
-                dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex , new DataGridViewRow());
+            DataGridView dgv = dataGridView;
+
+            if ((e.KeyCode == Keys.N) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
+                dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex, new DataGridViewRow());
 
                 //行挿入で最終選択行がずれる
                 lastSelectedRowIndex++;
+            }
+
+            if ((e.KeyCode == Keys.X) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
+                dgvClipBoard = dgv.Rows[dgv.CurrentRow.Index];
+                dgv.Rows.RemoveAt(dgv.CurrentRow.Index);
+            }
+
+            if ((e.KeyCode == Keys.V) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
+                if (dgvClipBoard != null) {
+                    dgv.Rows.Insert(dgv.CurrentRow.Index, dgvClipBoard);
+                    dgvClipBoard = null;
+                }
             }
         }
 
