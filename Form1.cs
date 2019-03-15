@@ -32,6 +32,28 @@ namespace SimpleDataEditor {
             }
 
             dataGridView.SelectionChanged += dataGirdView_SelectionChanged;
+            dataGridView.KeyDown += dataGridView_KeyDown;
+
+        }
+
+        private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
+            if((e.KeyCode == Keys.N) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
+                Console.WriteLine("press n");
+                dataGridView.Rows.Insert(dataGridView.CurrentCell.RowIndex , new DataGridViewRow());
+
+                //行挿入で最終選択行がずれる
+                lastSelectedRowIndex++;
+            }
+
+            if ((e.KeyCode == Keys.H) && ((Control.ModifierKeys & Keys.Control) == Keys.Control)) {
+                if (dataGridView.SelectedRows.Count > 0) {
+                    dataGridView.Rows[dataGridView.CurrentCell.RowIndex].Visible = false;
+                }
+
+                if (dataGridView.SelectedColumns.Count > 0) {
+                    dataGridView.Columns[dataGridView.CurrentCell.ColumnIndex].Visible = false;
+                }
+            }
 
         }
 
