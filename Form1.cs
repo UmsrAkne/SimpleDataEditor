@@ -12,6 +12,7 @@ using System.Windows.Forms;
 namespace SimpleDataEditor {
     public partial class Form1 : Form {
 
+        private int lastSelectedRowIndex = 0;
 
         public Form1() {
             InitializeComponent();
@@ -29,6 +30,9 @@ namespace SimpleDataEditor {
             foreach (String[] ss in currentText) {
                 dataGridView.Rows.Add(ss);
             }
+
+            dataGridView.SelectionChanged += dataGirdView_SelectionChanged;
+
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -61,5 +65,20 @@ namespace SimpleDataEditor {
             return moreSeparated;
         }
 
+        private void dataGirdView_SelectionChanged(object sender , EventArgs e) {
+
+            //最後に選択されていたセルの背景色を先に変更しなければ、変更された色が残ったままになる。
+            changeRowBackColor(lastSelectedRowIndex, Color.White);
+            changeRowBackColor(dataGridView.CurrentCell.RowIndex, Color.AliceBlue);
+
+            lastSelectedRowIndex = dataGridView.CurrentCell.RowIndex;
+        }
+
+        private void changeRowBackColor( int targetRowIndex , Color paintingColor ) {
+            DataGridViewCellCollection cells = dataGridView.Rows[targetRowIndex].Cells;
+            foreach (DataGridViewCell cell in cells) {
+                cell.Style.BackColor = paintingColor;
+            }
+        }
     }
 }
