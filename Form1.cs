@@ -14,6 +14,8 @@ namespace SimpleDataEditor {
 
         private int lastSelectedRowIndex = 0;
         private DataGridViewRow dgvClipBoard;
+        private int cellWidthBeforeEdit;
+        private AutoCompleteStringCollection autoCompList;
 
         public Form1() {
             InitializeComponent();
@@ -42,11 +44,42 @@ namespace SimpleDataEditor {
                 dataGridView.Rows.Add(ss);
             }
 
+            autoCompList = new AutoCompleteStringCollection();
+            autoCompList.AddRange(
+              new string[] {
+                  "aaaaaaaaa" , "bbbbbbbbb" , "ccccccccc"
+              }
+            );
 
             dataGridView.SelectionChanged += dataGirdView_SelectionChanged;
             dataGridView.KeyDown += dataGridView_KeyDown;
             dataGridView.CellContentClick += dataGridView_CellContentClick;
+            dataGridView.EditingControlShowing += dataGridView_EditingControlShowing;
+            dataGridView.CellEndEdit += dataGridView_CellEndEdit;
 
+        }
+
+        private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            //編集が確定したら列の幅を元に戻す
+            dataGridView.Columns[dataGridView.CurrentCell.ColumnIndex].Width = cellWidthBeforeEdit;
+        }
+
+        private void dataGridView_EditingControlShowing( object sender, DataGridViewEditingControlShowingEventArgs e) {
+
+            //一時的に列のサイズを広げる
+            cellWidthBeforeEdit = getCurrentCellSize().Width;
+            dataGridView.Columns[dataGridView.CurrentCell.ColumnIndex].Width = 200;
+
+            TextBox textBox = e.Control as TextBox;
+            if(textBox == null) {
+                return;
+            }
+
+            Console.WriteLine(textBox.Width);
+
+            textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            textBox.AutoCompleteCustomSource = autoCompList;
         }
 
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e) {
@@ -151,6 +184,13 @@ namespace SimpleDataEditor {
 
             File.WriteAllText(@"C:\sampleExpoted.txt", unitText);
 
+        }
+
+        private Size getCurrentCellSize() {
+            Size size = new Size();
+            size.Width = dataGridView.Columns[dataGridView.CurrentCell.ColumnIndex].Width;
+            size.Height = dataGridView.CurrentRow.Height;
+            return size;
         }
     }
 }
